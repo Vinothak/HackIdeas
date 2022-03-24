@@ -1,0 +1,31 @@
+{
+  "name": "plex-employees",
+  "version": "0.1.0",
+  "node version": "12.16.1",
+  "license": "None provided",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "concurrently": "^3.6.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^1.17.5",
+    "react": "^16.4.1",
+    "react-bootstrap": "^1.0.0-beta.16",
+    "react-dom": "^16.4.1",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "1.1.4",
+    "react-table": "^6.10.0",
+    "react-toastify": "^8.2.0",
+    "styled-components": "^5.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "custom:build": "nodemon src/scripts/build.js --watch src/data --ext .md",
+    "custom:start": "concurrently --kill-others \"npm run custom:build\" \"npm run start\""
+  }
+}
