@@ -3,7 +3,7 @@ import { Row, Col, Form, Container, Card, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import axios from 'axios';
 import { closeForm } from '../../utils/CloseForm';
-
+import NavBar from './components/UI/NavBar/NavBar';
 const url = 'http://localhost:8080/api/employees';
 const editUrl = 'http://localhost:8080/api/edit/employees';
 

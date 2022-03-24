@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col, Form, Container, Card, Button } from 'react-bootstrap';
 import styled from 'styled-components';
+import NavBar from './components/UI/NavBar/NavBar';
 import axios from 'axios';
 import { closeForm } from '../../utils/CloseForm';
 
@@ -93,6 +94,7 @@ function AddForm() {
 
   return (
     <Wrapper>
+           <NavBar title="Plexxis" user="Vinoth Ak" />
       <Container>
         <Row className="justify-content-md-center">
           <Col xs={12} sm={9}>
