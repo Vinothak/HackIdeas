@@ -3,15 +3,14 @@ import { Navbar, Nav } from 'react-bootstrap';
 import styled from 'styled-components';
 import Logo from '../../../../src/logo.png'
 
-const navBar = ({ title, user }) => (
+const navBar = ({ user }) => (
   <Navbar bg="dark" variant="dark" >
     <StyledNavbarBrand href="/">
     <img src={Logo} alt="Logo" />
-      {title}
     </StyledNavbarBrand>
     <Nav className="justify-space-between">
-      <Nav.Link href="/">Dashboard</Nav.Link>
-      <Nav.Link href="/add">Add Employee</Nav.Link>
+      <Nav.Link href="/dashboard">Dashboard</Nav.Link>
+      <Nav.Link href="/add">Add Ideas</Nav.Link>
     </Nav>
     <Navbar.Collapse className="justify-content-end">
       <StyledNavbarText>

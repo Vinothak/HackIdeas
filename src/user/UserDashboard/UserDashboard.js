@@ -6,60 +6,82 @@
 import React from 'react';
 import { Row, Col, Container, Button } from 'react-bootstrap';
 import styled from 'styled-components';
-import axios from 'axios';
+//import axios from 'axios';
+import { withRouter  } from 'react-router-dom';
 import SearchBar from '../../components/UI/SearchBar/SearchBar';
 import TableTemplate from '../../components/Tables/TableTemplate';
 import NavBar from '../../components/UI/NavBar/NavBar';
-const url = 'http://localhost:8080/api/employees';
+//const url = 'http://localhost:8080/api/employees';
 
 class UserDashboard extends React.Component {
-  state = {
-    employees: [],
-    filterValue: '',
-    filterEmployees: [],
-    loggedInUser: ' ',
-  };
 
+  constructor(props){
+    super(props);
+  this.state = {
+    ideas: [],
+    filterValue: '',
+    filterIdeas: [],
+    loggedInUser: ' ',
+  }
+  }
   componentDidMount = () => {
 
-    axios
-      .get(url)
-      .then(response => {
-        this.setState({ employees: response.data.data });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-
+      const currideas=localStorage.getItem('hackIdeas')!=null?JSON.parse(localStorage.getItem('hackIdeas')):[];
       const currentUser=localStorage.getItem('currentUser')!=null?localStorage.getItem('currentUser'):'UnknownUser';
       this.setState({
+        ideas:currideas,
         loggedInUser:currentUser             
       });
   };
 
-  deleteEmployee(id) {
-    const confirmDelete = window.confirm('Delete employee forever?');
+  deleteIdea(id) {
+    const confirmDelete = window.confirm('Delete hack idea forever?');
     if (confirmDelete) {
-      axios.delete(`${url}/${id}`).then(res => console.log(res.data));
       this.setState({
-        employees: this.state.employees.filter(el => el.id !== id),
+        ideas: this.state.ideas.filter(idea => idea.id !== id),
+      },()=>{
+        localStorage.setItem('hackIdeas',JSON.stringify(this.state.ideas));
       });
+     
     }
   }
 
-  openEditFormHandler = id => {
-    this.props.history.replace(`/edit/${id}`);
-  };
+  upVote(id) {
+
+     
+     //deep clone of ideas array.
+   const tempIdeas= JSON.parse(JSON.stringify(this.state.ideas)); 
+   
+        //Find index of specific object using findIndex method.  
+const objIndex = tempIdeas.findIndex((obj => obj.id == id));
+
+//Log object to Console.
+console.log("Before update: ", tempIdeas[objIndex])
+
+//Update object's name property.
+tempIdeas[objIndex].votes = tempIdeas[objIndex].votes + 1;
+
+//Log object to console again.
+console.log("After update: ", tempIdeas[objIndex])
+
+      this.setState({
+        ideas: tempIdeas
+      },()=>{
+        localStorage.setItem('hackIdeas',JSON.stringify(this.state.ideas));
+      });
+  }
 
   openAddFormHandler = () => {
-    window.location.href = '/add';
+    this.props.history.push({
+      pathname: '/add'
+  });
   };
 
   changeHandler = prop => this.setState({ [prop.name]: prop.value });
 
   render() {
-    const { employees, filterValue, filterEmployees } = this.state;
-    const filteredEmployees = !filterValue ? employees : filterEmployees;
+    const { ideas, filterValue, filterIdeas } = this.state;
+    const filteredIdeas = !filterValue ? ideas : filterIdeas;
     // filterValue === '' ? employees : filterEmployees;
 
     return (
@@ -67,7 +89,7 @@ class UserDashboard extends React.Component {
             <NavBar  user={this.state.loggedInUser} />
         <SearchBar
           value={filterValue}
-          employees={employees}
+          ideas={ideas}
           changeHandler={this.changeHandler.bind(this)}
         />
         <Container>
@@ -78,19 +100,19 @@ class UserDashboard extends React.Component {
                 size="sm"
                 onClick={this.openAddFormHandler.bind(this)}
               >
-                Add Employee
+                Add Idea
               </Button>
             </Col>
             <Col xs={7} sm={7}>
-              <H1>Employee List</H1>
+              <H1>hackathon Ideas </H1>
             </Col>
           </Row>
           <Row>
             <Col xs={12} sm={12} className="text-center">
               <TableTemplate
-                filteredEmployees={filteredEmployees}
-                deleteEmployee={this.deleteEmployee.bind(this)}
-                openEditForm={this.openEditFormHandler.bind(this)}
+                filteredIdeas={filteredIdeas}
+                deleteIdea={this.deleteIdea.bind(this)}
+                upVote={this.upVote.bind(this)}
               />
             </Col>
           </Row>
@@ -104,4 +126,4 @@ const H1 = styled.h1`
   font-size: 2em;
 `;
 
-export default UserDashboard;
+export default withRouter(UserDashboard);

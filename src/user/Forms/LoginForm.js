@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import logo from '../../../src/logo.png'
 import styled from 'styled-components';

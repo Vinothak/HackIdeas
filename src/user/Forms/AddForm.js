@@ -1,105 +1,83 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Container, Card, Button } from 'react-bootstrap';
 import styled from 'styled-components';
-import NavBar from './components/UI/NavBar/NavBar';
-import axios from 'axios';
+import NavBar from '../../components/UI/NavBar/NavBar';
+import { withRouter } from "react-router";
 import { closeForm } from '../../utils/CloseForm';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-const addUrl = 'http://localhost:8080/api/add/employees/';
 
-const colors = [
-  'White',
-  'Yellow',
-  'Orange',
-  'Red',
-  'Green',
-  'Blue',
-  'Brown',
-  'Purple',
-  'Black',
+const tags = [
+  'technology',
+  'hackathon',
+  'hackideas',
+  'letshack'
 ];
-const cities = [
-  'Brampton',
-  'Bolton',
-  'Toronto',
-  'Oakville',
-  'Mississauga',
-  'Makham',
-  'Ottawa',
-];
-const branches = ['Abacus', 'Pillsworth', 'Dundas', 'Queen', 'King'];
 
-function AddForm() {
-  const [employee, setEmployee] = useState({
-    name: '',
-    profession: '',
-    color: '',
-    city: '',
-    branch: '',
-    assigned: false,
-  });
+function AddForm(props) {
 
-  const onChangeName = event => {
-    setEmployee({
-      ...employee,
-      name: event.target.value,
-    });
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [selectedtags, setTags] = useState('');
+  const [user,setUser]=useState('')
+  const [date, setDate] = useState(new Date());
+
+
+  useEffect(()=>{
+const currUser=localStorage.getItem('currentUser');
+setUser(currUser);
+  },[])
+
+  const onChangeTitle = event => {
+    setTitle(event.target.value)
   };
 
-  const onChangeProfession = event => {
-    setEmployee({
-      ...employee,
-      profession: event.target.value,
-    });
+  const onChangeDescription = event => {
+    setDescription( event.target.value,
+    );
   };
 
-  const onChangeColor = event => {
-    setEmployee({
-      ...employee,
-      color: event.target.value,
-    });
-  };
-
-  const onChangeCity = event => {
-    setEmployee({
-      ...employee,
-      city: event.target.value,
-    });
-  };
-
-  const onChangeBranch = event => {
-    setEmployee({
-      ...employee,
-      branch: event.target.value,
-    });
+  const onChangeTags = event => {
+    setTags(
+   event.target.value,
+    );
   };
 
   const isInputFieldEmpty = () => {
     return (
-      employee.name === '' ||
-      employee.profession === '' ||
-      employee.color === '' ||
-      employee.city === '' ||
-      employee.branch === '' ||
-      employee.assigned === null
+      title === '' ||
+      description === '' ||
+      selectedtags === null
     );
   };
 
-  const handleSubmit = () => {
-    axios.post(addUrl, employee).then(res => {
-      console.log(res.data.data);
-      closeForm();
-    });
+  const handleSubmit = (event) => {
+    event.preventDefault();
+      const hackIdeas=localStorage.getItem('hackIdeas')!=null? JSON.parse(localStorage.getItem('hackIdeas')):[];
+      console.log('old hack ideas',hackIdeas);
+      const newIdea={
+        id:hackIdeas.length+1,
+        title,
+        description,
+        tags,
+        votes:0,
+        createdDate:date,
+         createdUser:user,
+      };
+      hackIdeas.push(newIdea);
+      localStorage.setItem('hackIdeas',JSON.stringify(hackIdeas));
+      console.log('new hackIdeas',hackIdeas);
   };
 
   return (
-    <Wrapper>
-           <NavBar title="Plexxis" user="Vinoth Ak" />
+    <Wrapper>  
+           <NavBar user={user} />
       <Container>
         <Row className="justify-content-md-center">
           <Col xs={12} sm={9}>
-            <H6>
-              Please fill out the form to add an employee and then click
+            <H6 className='addform'>
+              Please fill out the form to add an hack idea and then click
               the submit button.
             </H6>
           </Col>
@@ -107,76 +85,53 @@ function AddForm() {
         <Row className="justify-content-md-center">
           <Col xs={12} sm={9}>
             <Card>
-              <StyledCardHeader>Add Employee</StyledCardHeader>
+              <StyledCardHeader>Add Idea</StyledCardHeader>
               <Card.Body>
                 <Form onSubmit={handleSubmit}>
                   <Form.Group controlId="addName">
-                    <Form.Label>Name</Form.Label>
+                    <Form.Label>Title</Form.Label>
                     <Form.Control
                       required
                       type="text"
                       name="name"
-                      placeholder="Please enter full name"
-                      value={employee.name}
-                      onChange={onChangeName}
+                      placeholder="Please enter the title"
+                      value={title}
+                      onChange={onChangeTitle}
                     />
                   </Form.Group>
                   <Form.Group controlId="addProfession">
-                    <Form.Label>Profession</Form.Label>
+                    <Form.Label>Description</Form.Label>
                     <Form.Control
                       required
                       type="text"
-                      name="profession"
-                      placeholder="Please enter job title"
-                      value={employee.profession}
-                      onChange={onChangeProfession}
+                      name="description"
+                      placeholder="Please enter the description"
+                      value={description}
+                      onChange={onChangeDescription}
                     />
                   </Form.Group>
                   <Form.Group controlId="addColor">
-                    <Form.Label>Color</Form.Label>
+                    <Form.Label>Tags</Form.Label>
                     <Form.Control
                       required
                       type="text"
-                      name="color"
+                      name="tags"
                       as="select"
-                      value={employee.color}
-                      onChange={onChangeColor}
+                      value={selectedtags}
+                      onChange={onChangeTags}
                     >
-                      {colors.map(color => (
-                        <option key={color}>{color}</option>
+                      {tags.map(tags => (
+                        <option key={tags}>{tags}</option>
                       ))}
                     </Form.Control>
                   </Form.Group>
-                  <Form.Group controlId="addCity">
-                    <Form.Label>City</Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      name="city"
-                      as="select"
-                      value={employee.city}
-                      onChange={onChangeCity}
-                    >
-                      {cities.map(city => (
-                        <option key={city}>{city}</option>
-                      ))}
-                    </Form.Control>
+                  <Form.Group controlId="addColor">
+                    <Form.Label>Date</Form.Label>
+    
+                    <DatePicker   dateFormat="dd-MM-yyyy" selected={date} onChange={date => setDate(date)} />
+                  
                   </Form.Group>
-                  <Form.Group controlId="addBranch">
-                    <Form.Label>Branch</Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      name="branch"
-                      as="select"
-                      value={employee.branch}
-                      onChange={onChangeBranch}
-                    >
-                      {branches.map(branch => (
-                        <option key={branch}>{branch}</option>
-                      ))}
-                    </Form.Control>
-                  </Form.Group>
+                
                   <Button
                     variant="danger"
                     size="sm"
@@ -203,11 +158,12 @@ function AddForm() {
 }
 
 const Wrapper = styled.div`
-  margin-top: 50px;
+  margin-top: 0px;
 `;
 
 const H6 = styled.h6`
   margin-bottom: 10px;
+  margin-top:30px;
   color: #858484;
 `;
 
@@ -221,4 +177,4 @@ const StyledButton = styled(Button)`
   margin-left: 5px;
 `;
 
-export default AddForm;
+export default withRouter(AddForm);

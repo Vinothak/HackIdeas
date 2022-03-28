@@ -1,13 +1,15 @@
 import React from 'react';
-import ReactTable from 'react-table';
+import ReactTable,{useTable} from 'react-table';
 import Button from 'react-bootstrap/Button';
 import 'react-table/react-table.css';
 import styled from 'styled-components';
 
+
+const sortOptions= [{ id: 'votes', desc: false} ,{id:'createdDate',desc:false}]
 const TableTemplate = ({
-  filteredEmployees,
-  openEditForm,
-  deleteEmployee,
+  filteredIdeas,
+  deleteIdea,
+  upVote
 }) => {
   const columns = React.useMemo(
     () => [
@@ -15,13 +17,10 @@ const TableTemplate = ({
         // Code and Assigned will be shown in Admin page which will be implement in the future
         columns: [
           { Header: 'ID', accessor: 'id', minWidth: 50, maxWidth: 60 },
-          { Header: 'Name', accessor: 'name' },
-          { Header: 'Code', accessor: 'code', show: false },
-          { Header: 'Profession', accessor: 'profession' },
-          { Header: 'Color', accessor: 'color' },
-          { Header: 'City', accessor: 'city' },
-          { Header: 'Branch', accessor: 'branch' },
-          { Header: 'Assigned', accessor: 'assigned', show: false },
+          { Header: 'Title', accessor: 'title' },
+          { Header: 'Description', accessor: 'description' },
+          { Header: 'votes', accessor: 'votes' },
+          { Header: 'createdOn', accessor: 'createdDate'},
           {
             Header: 'Actions',
             id: 'actions',
@@ -30,16 +29,16 @@ const TableTemplate = ({
               return (
                 <div>
                   <Button
-                    variant="warning"
+                    variant="primary"
                     size="sm"
-                    onClick={() => openEditForm(row.id)}
-                  >
-                    Edit
+                    onClick={()=>upVote(row.id)}
+                    >
+                      UpVote
                   </Button>
                   <StyledButton
                     variant="danger"
                     size="sm"
-                    onClick={() => deleteEmployee(row.id)}
+                    onClick={() => deleteIdea(row.id)}
                   >
                     Delete
                   </StyledButton>
@@ -56,7 +55,8 @@ const TableTemplate = ({
   return (
     <ReactTable
       className="-striped -highlight"
-      data={filteredEmployees}
+      sorted={sortOptions}
+      data={filteredIdeas}
       columns={columns}
       defaultPageSize={10}
       style={{
