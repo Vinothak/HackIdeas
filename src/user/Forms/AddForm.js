@@ -6,41 +6,43 @@ import { withRouter } from "react-router";
 import { closeForm } from '../../utils/CloseForm';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Select from 'react-select'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
-const tags = [
-  'technology',
-  'hackathon',
-  'hackideas',
-  'letshack'
-];
+const options = [
+  { value: 'technology', label: 'technology' },
+  { value: 'hackideas', label: 'hackideas' },
+  { value: 'letshack', label: 'letshack' },
+  { value: 'hackathon', label: 'hackathon' },
+  {value:'scripboxhackathon2022',label:'scripboxhackathon2022'}
+]
 
-function AddForm(props) {
+function AddForm() {
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [selectedtags, setTags] = useState('');
-  const [user,setUser]=useState('')
+  // const [selectedtags, setTags] = useState('');
+  const [user, setUser] = useState('')
   const [date, setDate] = useState(new Date());
+  const [selectedtags, setTags] = useState([]);
 
+  const onChangeTags = (event) => {
+    setTags(event);
+  }
 
-  useEffect(()=>{
-const currUser=localStorage.getItem('currentUser');
-setUser(currUser);
-  },[])
+  useEffect(() => {
+    const currUser = localStorage.getItem('currentUser');
+    setUser(currUser);
+  }, [])
 
   const onChangeTitle = event => {
     setTitle(event.target.value)
   };
 
   const onChangeDescription = event => {
-    setDescription( event.target.value,
-    );
-  };
-
-  const onChangeTags = event => {
-    setTags(
-   event.target.value,
+    setDescription(event.target.value,
     );
   };
 
@@ -54,25 +56,28 @@ setUser(currUser);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-      const hackIdeas=localStorage.getItem('hackIdeas')!=null? JSON.parse(localStorage.getItem('hackIdeas')):[];
-      console.log('old hack ideas',hackIdeas);
-      const newIdea={
-        id:hackIdeas.length+1,
-        title,
-        description,
-        tags,
-        votes:0,
-        createdDate:date,
-         createdUser:user,
-      };
-      hackIdeas.push(newIdea);
-      localStorage.setItem('hackIdeas',JSON.stringify(hackIdeas));
-      console.log('new hackIdeas',hackIdeas);
+    const hackIdeas = localStorage.getItem('hackIdeas') != null ? JSON.parse(localStorage.getItem('hackIdeas')) : [];
+    const newIdea = {
+      id: hackIdeas.length + 1,
+      title,
+      description,
+      selectedtags,
+      votes: 0,
+      createdDate: date,
+      createdUser: user,
+    };
+    hackIdeas.push(newIdea);
+    localStorage.setItem('hackIdeas', JSON.stringify(hackIdeas));
+    setTags([]);
+    setTitle('');
+    setDescription('');
+    toast('Successfully created a challenge');
   };
 
   return (
-    <Wrapper>  
-           <NavBar user={user} />
+    <Wrapper>
+      <ToastContainer />
+      <NavBar user={user} />
       <Container>
         <Row className="justify-content-md-center">
           <Col xs={12} sm={9}>
@@ -112,26 +117,15 @@ setUser(currUser);
                   </Form.Group>
                   <Form.Group controlId="addColor">
                     <Form.Label>Tags</Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      name="tags"
-                      as="select"
-                      value={selectedtags}
-                      onChange={onChangeTags}
-                    >
-                      {tags.map(tags => (
-                        <option key={tags}>{tags}</option>
-                      ))}
-                    </Form.Control>
+                    <Select isMulti options={options} onChange={onChangeTags} />
                   </Form.Group>
                   <Form.Group controlId="addColor">
                     <Form.Label>Date</Form.Label>
-    
-                    <DatePicker   dateFormat="dd-MM-yyyy" selected={date} onChange={date => setDate(date)} />
-                  
+
+                    <DatePicker dateFormat="dd-MM-yyyy" selected={date} onChange={date => setDate(date)} />
+
                   </Form.Group>
-                
+
                   <Button
                     variant="danger"
                     size="sm"

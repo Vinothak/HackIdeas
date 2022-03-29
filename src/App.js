@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import UserDashboard from './user/UserDashboard/UserDashboard';
 import AddForm from './user/Forms/AddForm';
 import LoginForm from './user/Forms/LoginForm'
+import Logout from './user/UserDashboard/Logout'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" exact component={LoginForm}/>
         <Route path="/dashboard" exact component={UserDashboard} />
         <Route path="/add" component={AddForm} />
+        <Route path="/logout" exact component={Logout}></Route>
       </div>
     </Router>
   );
