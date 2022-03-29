@@ -3,10 +3,11 @@
 ## Quick Features
 
 - Lightweight 
-- Sorting (Multi and Stable)
-- Filters
+- Sorting 
 - Pagination
 - Add Challenges
+- Add hashtags
+- Up Vote
 - Delete Challenges
 - Column Ordering
 - Animatable
