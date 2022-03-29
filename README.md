@@ -1,4 +1,4 @@
-# Scripbox Hackathon 
+# Scripbox Hackathon Ideas
 
 ## Quick Features
 
