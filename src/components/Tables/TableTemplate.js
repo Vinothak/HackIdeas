@@ -21,9 +21,12 @@ const TableTemplate = ({
           { Header: () => <b>Title</b>, accessor: 'title' },
           { Header: () => <b>Description</b>, accessor: 'description', style: { 'whiteSpace': 'unset' } },
           { Header: () => <b>Votes</b>, accessor: 'votes' },
-          { Header: () => <b>created On</b>, accessor: 'createdDate', style: { 'whiteSpace': 'unset' } },
-          {
-            Header: () => <b>Hash Tags </b>, accessor: 'selectedtags', style: { 'whiteSpace': 'unset' }, Cell: ({ value }) => {
+          { Header: () => <b>created On</b>, accessor: 'createdDate', style: { 'whiteSpace': 'unset' }, Cell: ({ value }) => {
+             
+            return value ;
+          }},
+          {   
+                     Header: () => <b>Hash Tags </b>, accessor: 'selectedtags', style: { 'whiteSpace': 'unset' }, Cell: ({ value }) => {
               let hashTagsStr = ""
               const hashTags = value.forEach((tag) => {
                 hashTagsStr += "#" + tag.value + " ";

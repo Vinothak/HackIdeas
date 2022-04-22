@@ -19,6 +19,7 @@ class UserDashboard extends React.Component {
       filterValue: '',
       filterIdeas: [],
       loggedInUser: ' ',
+      voted:false
     }
   }
   componentDidMount = () => {
@@ -44,7 +45,9 @@ class UserDashboard extends React.Component {
   }
 
   upVote = id => {
-
+    if(this.state.voted){
+      return;
+    }
     //deep clone of ideas array.
     const tempIdeas = JSON.parse(JSON.stringify(this.state.ideas));
 
@@ -57,11 +60,23 @@ class UserDashboard extends React.Component {
 
     // updating ideas
     this.setState({
-      ideas: tempIdeas
+      ideas: tempIdeas,
+      voted:true
     }, () => {
+      const currentIdeas=localStorage.getItem('hackIdeas')!=null?localStorage.getItem('hackIdeas'):[];
+     
+      for(let i=0;i<currentIdeas.length;i++){
+        if(currentIdeas[i].id==id){
+          const obj=currentIdeas[i];
+          let votesArray=obj.votes==undefined?[]:obj.votes;
+          votesArray.push();
+        }
+      }
       localStorage.setItem('hackIdeas', JSON.stringify(this.state.ideas));
     });
   }
+
+
 
   openAddFormHandler = () => {
     this.props.history.push({
